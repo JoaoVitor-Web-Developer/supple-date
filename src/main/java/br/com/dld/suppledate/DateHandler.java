@@ -34,7 +34,7 @@ public class DateHandler {
     }
 
     public @NotNull DateFormatter format() {
-        return new DateFormatter();
+        return new DateFormatter(SuppleDate.of(this.date));
     }
 
     public @NotNull DateFormatter format(Shape shape) {
