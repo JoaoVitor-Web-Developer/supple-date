@@ -1,6 +1,5 @@
 package br.com.dld.suppledate;
 
-import br.com.dld.suppledate.exceptions.FormatNotAcceptable;
 import br.com.dld.suppledate.temporality.Temporality;
 import br.com.dld.suppledate.temporality.TemporalityParser;
 import lombok.AllArgsConstructor;
@@ -61,12 +60,20 @@ public enum Chronos {
         return of(LocalDateTime.now(), zoneId);
     }
 
-    public Temporality of(String date) throws FormatNotAcceptable {
+    public Temporality of(String date) {
         return Temporality.of(pattern, date);
     }
 
-    public Temporality of(long date) throws FormatNotAcceptable {
+    public Temporality of(long date) {
         return Temporality.of(pattern, date);
+    }
+
+    public Temporality of(int year, int month, int day) {
+        return of(year, month, day, 0, 0, 0);
+    }
+
+    public Temporality of(int year, int month, int day, int hour, int minutes, int seconds) {
+        return Temporality.of(LocalDateTime.of(year, month, day, hour, minutes, seconds));
     }
 
     public Temporality of(Calendar date) {
@@ -85,11 +92,11 @@ public enum Chronos {
         return Temporality.of(pattern, date);
     }
 
-    public Temporality of(String date, ZoneId zoneId) throws FormatNotAcceptable {
+    public Temporality of(String date, ZoneId zoneId) {
         return Temporality.of(pattern, date, zoneId);
     }
 
-    public Temporality of(long date, ZoneId zoneId) throws FormatNotAcceptable {
+    public Temporality of(long date, ZoneId zoneId) {
         return Temporality.of(pattern, date, zoneId);
     }
 

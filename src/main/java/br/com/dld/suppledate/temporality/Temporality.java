@@ -1,7 +1,6 @@
 package br.com.dld.suppledate.temporality;
 
 import br.com.dld.suppledate.Chronos;
-import br.com.dld.suppledate.exceptions.FormatNotAcceptable;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
@@ -70,11 +69,11 @@ public class Temporality {
         return of(Chronos.BAR_D4HMS.getPattern(), date, zoneId);
     }
 
-    public static Temporality of(String pattern, String date) throws FormatNotAcceptable {
+    public static Temporality of(String pattern, String date) {
         return of(pattern, date, ZoneId.systemDefault());
     }
 
-    public static Temporality of(String pattern, long date) throws FormatNotAcceptable {
+    public static Temporality of(String pattern, long date) {
         return of(pattern, date, ZoneId.systemDefault());
     }
 
@@ -94,12 +93,12 @@ public class Temporality {
         return of(pattern, date, ZoneId.systemDefault());
     }
 
-    public static Temporality of(String pattern, String date, ZoneId zoneId) throws FormatNotAcceptable {
-        return new Temporality(pattern, zoneId, TemporalityParser.toLocalDateTime(date));
+    public static Temporality of(String pattern, String date, ZoneId zoneId) {
+        return new Temporality(pattern, zoneId, TemporalityParser.toLocalDateTime(date, pattern));
     }
 
-    public static Temporality of(String pattern, long date, ZoneId zoneId) throws FormatNotAcceptable {
-        return new Temporality(pattern, zoneId, TemporalityParser.toLocalDateTime(date));
+    public static Temporality of(String pattern, long date, ZoneId zoneId) {
+        return new Temporality(pattern, zoneId, TemporalityParser.toLocalDateTime(date, pattern));
     }
 
     public static Temporality of(String pattern, Calendar date, ZoneId zoneId) {
@@ -160,6 +159,10 @@ public class Temporality {
         dateTime = TemporalityHandler.preventWeekend(dateTime);
 
         return this;
+    }
+
+    public boolean isWithinRange(LocalDateTime initialDate, LocalDateTime finalDate) {
+        return TemporalityHandler.isWithinRange(dateTime, initialDate, finalDate);
     }
     //endregion
 

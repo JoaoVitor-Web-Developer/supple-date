@@ -1,7 +1,6 @@
 package br.com.dld.suppledate.temporality;
 
 import br.com.dld.suppledate.Chronos;
-import br.com.dld.suppledate.exceptions.FormatNotAcceptable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,42 +18,12 @@ public class TemporalityParser {
         throw new IllegalStateException("Utility class");
     }
 
-    /**
-     * Verifica se a string de data corresponde a algum dos formatos de data suportados e retorna o padrão de formato correspondente.
-     *
-     * @param date a string de data a ser verificada.
-     * @return o padrão de formato correspondente à string de data.
-     * @throws FormatNotAcceptable se a string de data não corresponder a nenhum dos formatos de data suportados.
-     */
-    public static String match(String date) throws FormatNotAcceptable {
-        for (Chronos chronos : Chronos.values()) {
-            try {
-                toLocalDateTime(date, chronos.getPattern());
-                return chronos.getPattern();
-            } catch (Exception ignored) { //ignored
-            }
-        }
-
-        throw new FormatNotAcceptable("Your date does not match any supported format");
-    }
-
     //region To LocalDateTime
-
-    /**
-     * Converte uma string de data em um objeto LocalDateTime utilizando o formato de data correspondente à string.
-     *
-     * @param date a string de data a ser convertida.
-     * @return um objeto LocalDateTime representando a data e hora correspondentes à string de data fornecida.
-     * @throws FormatNotAcceptable se a string de data não corresponder a nenhum dos formatos de data suportados.
-     */
-    public static LocalDateTime toLocalDateTime(String date) throws FormatNotAcceptable {
-        return toLocalDateTime(date, match(date));
-    }
 
     /**
      * Converte uma string de data em um objeto LocalDateTime utilizando o padrão de formato de data fornecido pelo objeto Chronos.
      *
-     * @param date a string de data a ser convertida.
+     * @param date    a string de data a ser convertida.
      * @param chronos o objeto Chronos contendo o padrão de formato de data desejado.
      * @return um objeto LocalDateTime representando a data e hora correspondentes à string de data fornecida e ao padrão de formato especificado.
      */
@@ -65,7 +34,7 @@ public class TemporalityParser {
     /**
      * Converte uma string de data em um objeto LocalDateTime utilizando o padrão de formato fornecido.
      *
-     * @param date a string de data a ser convertida.
+     * @param date    a string de data a ser convertida.
      * @param pattern o padrão de formato de data desejado.
      * @return um objeto LocalDateTime representando a data e hora correspondentes à string de data fornecida e ao padrão de formato especificado.
      */
@@ -81,13 +50,25 @@ public class TemporalityParser {
     /**
      * Converte um valor numérico de data em um objeto LocalDateTime utilizando o padrão de formato de data correspondente.
      *
-     * @param date o valor numérico de data a ser convertido.
+     * @param date    o valor numérico de data a ser convertido.
+     * @param chronos o objeto Chronos contendo o padrão de formato de data desejado.
      * @return um objeto LocalDateTime representando a data e hora correspondentes ao valor numérico de data fornecido e ao padrão de formato correspondente.
-     * @throws FormatNotAcceptable se o valor numérico de data não corresponder a nenhum dos formatos de data suportados.
      */
-    public static LocalDateTime toLocalDateTime(long date) throws FormatNotAcceptable {
+    public static LocalDateTime toLocalDateTime(long date, Chronos chronos) {
         String sDate = String.valueOf(date);
-        return toLocalDateTime(sDate, match(sDate));
+        return toLocalDateTime(sDate, chronos.getPattern());
+    }
+
+    /**
+     * Converte um valor numérico de data em um objeto LocalDateTime utilizando o padrão de formato de data correspondente.
+     *
+     * @param date    o valor numérico de data a ser convertido.
+     * @param pattern o padrão de formato de data desejado.
+     * @return um objeto LocalDateTime representando a data e hora correspondentes ao valor numérico de data fornecido e ao padrão de formato correspondente.
+     */
+    public static LocalDateTime toLocalDateTime(long date, String pattern) {
+        String sDate = String.valueOf(date);
+        return toLocalDateTime(sDate, pattern);
     }
 
     /**
@@ -103,7 +84,7 @@ public class TemporalityParser {
     /**
      * Converte um objeto Calendar em um objeto LocalDateTime utilizando a zona de fuso horário especificada.
      *
-     * @param date o objeto Calendar a ser convertido.
+     * @param date   o objeto Calendar a ser convertido.
      * @param zoneId a zona de fuso horário desejada.
      * @return um objeto LocalDateTime representando a data e hora correspondentes ao objeto Calendar fornecido e à zona de fuso horário especificada.
      */
@@ -124,7 +105,7 @@ public class TemporalityParser {
     /**
      * Converte um objeto Date em um objeto LocalDateTime utilizando a zona de fuso horário especificada.
      *
-     * @param date o objeto Date a ser convertido.
+     * @param date   o objeto Date a ser convertido.
      * @param zoneId a zona de fuso horário desejada.
      * @return um objeto LocalDateTime representando a data e hora correspondentes ao objeto Date fornecido e à zona de fuso horário especificada.
      */
@@ -177,11 +158,9 @@ public class TemporalityParser {
      *
      * @param date o valor long a ser convertido.
      * @return um objeto LocalDate representando a data correspondente ao valor long fornecido.
-     * @throws FormatNotAcceptable se o formato do valor long não for aceitável.
      */
-    public static LocalDate toLocalDate(long date) throws FormatNotAcceptable {
-        String sDate = String.valueOf(date);
-        return toLocalDate(sDate, match(sDate));
+    public static LocalDate toLocalDate(long date, String pattern) {
+        return toLocalDate(String.valueOf(date), pattern);
     }
 
     /**
@@ -269,11 +248,9 @@ public class TemporalityParser {
      *
      * @param date o valor long a ser convertido.
      * @return um objeto Calendar representando a data e hora correspondentes ao valor long fornecido.
-     * @throws FormatNotAcceptable se o formato do valor long não for aceitável.
      */
-    public static Calendar toCalendar(long date) throws FormatNotAcceptable {
-        String sDate = String.valueOf(date);
-        return toCalendar(sDate, match(sDate));
+    public static Calendar toCalendar(long date, String pattern) {
+        return toCalendar(String.valueOf(date), pattern);
     }
 
     /**
@@ -374,10 +351,9 @@ public class TemporalityParser {
      *
      * @param date o valor long a ser convertido.
      * @return um objeto Date representando a data e hora correspondentes ao valor long fornecido, utilizando a ZoneId padrão do sistema.
-     * @throws FormatNotAcceptable se o formato do valor long não for aceitável.
      */
-    public static Date toDate(long date) throws FormatNotAcceptable {
-        return toDate(date, ZoneId.systemDefault());
+    public static Date toDate(long date, String pattern) {
+        return toDate(date, pattern, ZoneId.systemDefault());
     }
 
     /**
@@ -386,11 +362,9 @@ public class TemporalityParser {
      * @param date   o valor long a ser convertido.
      * @param zoneId a ZoneId representando o fuso horário desejado para a conversão.
      * @return um objeto Date representando a data e hora correspondentes ao valor long fornecido, utilizando a ZoneId fornecida.
-     * @throws FormatNotAcceptable se o formato do valor long não for aceitável.
      */
-    public static Date toDate(long date, ZoneId zoneId) throws FormatNotAcceptable {
-        String sDate = String.valueOf(date);
-        return toDate(sDate, match(sDate), zoneId);
+    public static Date toDate(long date, String pattern, ZoneId zoneId) {
+        return toDate(String.valueOf(date), pattern, zoneId);
     }
 
     /**
