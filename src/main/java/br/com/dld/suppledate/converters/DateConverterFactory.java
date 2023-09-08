@@ -1,5 +1,6 @@
 package br.com.dld.suppledate.converters;
 
+import br.com.dld.suppledate.converters.implementations.*;
 import br.com.dld.suppledate.exceptions.PatternRequiredException;
 import br.com.dld.suppledate.exceptions.TypeNotFoundException;
 import lombok.AccessLevel;
@@ -16,6 +17,16 @@ import java.util.Map;
 @NoArgsConstructor(access=AccessLevel.NONE)
 public class DateConverterFactory {
 	private static final Map<Class<?>, PatternDateConverter<?>> CONVERTERS = new HashMap<>();
+
+	static {
+		add(new CalendarConverter());
+		add(new DateConverter());
+		add(new LocalDateConverter());
+		add(new LocalDateTimeConverter());
+		add(new LongConverter());
+		add(new StringConverter());
+		add(new TemporalityConverter());
+	}
 
 	public static void add(@NonNull final PatternDateConverter<?> converter) {
 		CONVERTERS.put(getType(converter), converter);
