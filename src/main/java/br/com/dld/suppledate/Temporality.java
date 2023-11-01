@@ -27,8 +27,16 @@ public class Temporality {
 		return new Temporality(date, pattern, zoneId);
 	}
 
+	public static Temporality of(@NonNull final Object date, final Chronos pattern, @NonNull final ZoneId zoneId) {
+		return of(date, pattern.getPattern(), zoneId);
+	}
+
 	public static Temporality of(@NonNull final Object date, final String pattern) {
 		return new Temporality(date, pattern, ZoneId.systemDefault());
+	}
+
+	public static Temporality of(@NonNull final Object date, final Chronos pattern) {
+		return of(date, pattern.getPattern());
 	}
 
 	public static Temporality of(@NonNull final Object date, @NonNull final ZoneId zoneId) {
@@ -43,8 +51,16 @@ public class Temporality {
 		return new Temporality(LocalDateTime.now(), pattern, zoneId);
 	}
 
+	public static Temporality now(@NonNull final Chronos pattern, @NonNull final ZoneId zoneId) {
+		return now(pattern.getPattern(), zoneId);
+	}
+
 	public static Temporality now(@NonNull final String pattern) {
 		return new Temporality(LocalDateTime.now(), pattern, ZoneId.systemDefault());
+	}
+
+	public static Temporality now(@NonNull final Chronos pattern) {
+		return now(pattern.getPattern());
 	}
 
 	public static Temporality now(@NonNull final ZoneId zoneId) {
@@ -156,16 +172,24 @@ public class Temporality {
 		}
 	}
 
+	public <T> T parse(Class<T> type, Chronos pattern, ZoneId zoneId) {
+		return parse(type, pattern.getPattern(), zoneId);
+	}
+
 	public <T> T parse(Class<T> type, String pattern) {
 		return parse(type, pattern, ZoneId.systemDefault());
 	}
 
+	public <T> T parse(Class<T> type, Chronos pattern) {
+		return parse(type, pattern.getPattern());
+	}
+
 	public <T> T parse(Class<T> type, ZoneId zoneId) {
-		return parse(type, null, zoneId);
+		return parse(type, (String) null, zoneId);
 	}
 
 	public <T> T parse(Class<T> type) {
-		return parse(type, null, ZoneId.systemDefault());
+		return parse(type, (String) null, ZoneId.systemDefault());
 	}
 
 	@Override
