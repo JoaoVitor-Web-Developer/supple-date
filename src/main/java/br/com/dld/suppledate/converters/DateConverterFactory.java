@@ -49,7 +49,9 @@ public class DateConverterFactory {
 
 	public static <T> LocalDateTime toLocalDateTime(@NonNull final T date, final String pattern, @NonNull final ZoneId zoneId) {
 		PatternDateConverter<T> converter = of(date);
-		validateConverterNeedsPattern(converter, date.getClass());
+		if(pattern == null) {
+			validateConverterNeedsPattern(converter, date.getClass());
+		}
 		return converter.toLocalDateTime(date, pattern, zoneId);
 	}
 
@@ -59,7 +61,9 @@ public class DateConverterFactory {
 
 	public static <T> T fromLocalDateTime(@NonNull final LocalDateTime date, @NonNull final Class<T> type, final String pattern, @NonNull final ZoneId zoneId) {
 		PatternDateConverter<T> converter = of(type);
-		validateConverterNeedsPattern(converter, type);
+		if(pattern == null) {
+			validateConverterNeedsPattern(converter, type);
+		}
 		return converter.fromLocalDateTime(date, pattern, zoneId);
 	}
 
@@ -68,14 +72,22 @@ public class DateConverterFactory {
 	}
 
 	private static Class<?> getType(@NonNull final PatternDateConverter<?> converter) {
-		Type genericSuperclass = converter.getClass().getGenericSuperclass();
+		Type[] genericSuperclass = converter.getClass().getGenericInterfaces();
 
-		if(genericSuperclass instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-			Type[] typeArguments = parameterizedType.getActualTypeArguments();
+		for(Type type: genericSuperclass) {
+			if(type instanceof ParameterizedType) {
+				ParameterizedType parameterizedType = (ParameterizedType) type;
+				Type rawType = parameterizedType.getRawType();
+				if(rawType instanceof Class) {
+					Class<?> rawClass = (Class<?>) rawType;
+					if(PatternDateConverter.class.isAssignableFrom(rawClass)) {
+						Type[] typeArguments = parameterizedType.getActualTypeArguments();
 
-			if(typeArguments.length > 0) {
-				return (Class<?>) typeArguments[0];
+						if(typeArguments.length > 0) {
+							return (Class<?>) typeArguments[0];
+						}
+					}
+				}
 			}
 		}
 
@@ -83,7 +95,7 @@ public class DateConverterFactory {
 	}
 
 	private static void validateConverterNeedsPattern(@NonNull final PatternDateConverter<?> converter, @NonNull final Class<?> type) {
-		if(converter instanceof NoPatternDateConverter) {
+		if(!(converter instanceof NoPatternDateConverter)) {
 			throw new PatternRequiredException(String.format("Converter for type '%s' need a pattern", type.getSimpleName()));
 		}
 	}
