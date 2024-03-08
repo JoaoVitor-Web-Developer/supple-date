@@ -20,6 +20,7 @@ public class DateConverterFactory {
 
     static {
         add(new CalendarConverter());
+        add(new GregorianCalendarConverter());
         add(new DateConverter());
         add(new LocalDateConverter());
         add(new LocalDateTimeConverter());
