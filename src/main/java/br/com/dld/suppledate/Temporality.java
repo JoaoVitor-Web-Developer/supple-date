@@ -72,43 +72,6 @@ public class Temporality {
         return new Temporality(LocalDateTime.now(), null, ZoneId.systemDefault());
     }
 
-//    public static String timeElapsedInWriting(Duration duration) {
-//        long seconds = duration.getSeconds() % 60;
-//        long minutes = duration.toMinutes() % 60;
-//        long hours = duration.toHours() % 24;
-//        long days = duration.toDays() % 365;
-//        long years = duration.toDays() / 365;
-//
-//        if (days == 0 && hours == 0 && minutes < 1) {
-//            return "Agora";
-//        }
-//
-//        List<String> list = new ArrayList<>();
-//        final String model = "%d %s";
-//
-//        if (years > 0) {
-//            list.add(String.format(model, years, years == 1 ? "ano" : "anos"));
-//        }
-//
-//        if (days > 0) {
-//            list.add(String.format(model, days, days == 1 ? "dia" : "dias"));
-//        }
-//
-//        if (hours > 0) {
-//            list.add(String.format(model, hours, hours == 1 ? "hora" : "horas"));
-//        }
-//
-//        if (minutes > 0) {
-//            list.add(String.format(model, minutes, minutes == 1 ? "minuto" : "minutos"));
-//        }
-//
-//        if (seconds > 0) {
-//            list.add(String.format(model, seconds, seconds == 1 ? "segundo" : "segundos"));
-//        }
-//
-//        return String.join(", ", list);
-//    }
-
     public static String timeElapsedInWriting(Duration duration) {
         WritingFormat writingFormat = WritingFormat.of(
                 FormattingOption.of(",", " e"),
