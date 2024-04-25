@@ -1,5 +1,8 @@
 package br.com.dld.suppledate;
 
+import br.com.dld.suppledate.aid.elapsed.FormattingOption;
+import br.com.dld.suppledate.aid.elapsed.UnitFormat;
+import br.com.dld.suppledate.aid.elapsed.WritingFormat;
 import br.com.dld.suppledate.converters.implementations.StringConverter;
 import br.com.dld.suppledate.exceptions.PatternRequiredException;
 import lombok.NonNull;
@@ -8,7 +11,6 @@ import java.time.*;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
 
 import static br.com.dld.suppledate.converters.DateConverterFactory.fromLocalDateTime;
 import static br.com.dld.suppledate.converters.DateConverterFactory.toLocalDateTime;
@@ -70,41 +72,59 @@ public class Temporality {
         return new Temporality(LocalDateTime.now(), null, ZoneId.systemDefault());
     }
 
+//    public static String timeElapsedInWriting(Duration duration) {
+//        long seconds = duration.getSeconds() % 60;
+//        long minutes = duration.toMinutes() % 60;
+//        long hours = duration.toHours() % 24;
+//        long days = duration.toDays() % 365;
+//        long years = duration.toDays() / 365;
+//
+//        if (days == 0 && hours == 0 && minutes < 1) {
+//            return "Agora";
+//        }
+//
+//        List<String> list = new ArrayList<>();
+//        final String model = "%d %s";
+//
+//        if (years > 0) {
+//            list.add(String.format(model, years, years == 1 ? "ano" : "anos"));
+//        }
+//
+//        if (days > 0) {
+//            list.add(String.format(model, days, days == 1 ? "dia" : "dias"));
+//        }
+//
+//        if (hours > 0) {
+//            list.add(String.format(model, hours, hours == 1 ? "hora" : "horas"));
+//        }
+//
+//        if (minutes > 0) {
+//            list.add(String.format(model, minutes, minutes == 1 ? "minuto" : "minutos"));
+//        }
+//
+//        if (seconds > 0) {
+//            list.add(String.format(model, seconds, seconds == 1 ? "segundo" : "segundos"));
+//        }
+//
+//        return String.join(", ", list);
+//    }
+
     public static String timeElapsedInWriting(Duration duration) {
-        long seconds = duration.getSeconds() % 60;
-        long minutes = duration.toMinutes() % 60;
-        long hours = duration.toHours() % 24;
-        long days = duration.toDays() % 365;
-        long years = duration.toDays() / 365;
+        WritingFormat writingFormat = WritingFormat.of(
+                FormattingOption.of(",", " e"),
+                "Agora",
+                UnitFormat.of("ano", "anos"),
+                UnitFormat.of("dia", "dias"),
+                UnitFormat.of("hora", "horas"),
+                UnitFormat.of("minuto", "minutos"),
+                UnitFormat.of("segundo", "segundos")
+        );
 
-        if (days == 0 && hours == 0 && minutes < 1) {
-            return "Agora";
-        }
+        return timeElapsedInWriting(duration, writingFormat);
+    }
 
-        List<String> list = new ArrayList<>();
-        final String model = "%d %s";
-
-        if (years > 0) {
-            list.add(String.format(model, years, years == 1 ? "ano" : "anos"));
-        }
-
-        if (days > 0) {
-            list.add(String.format(model, days, days == 1 ? "dia" : "dias"));
-        }
-
-        if (hours > 0) {
-            list.add(String.format(model, hours, hours == 1 ? "hora" : "horas"));
-        }
-
-        if (minutes > 0) {
-            list.add(String.format(model, minutes, minutes == 1 ? "minuto" : "minutos"));
-        }
-
-        if (seconds > 0) {
-            list.add(String.format(model, seconds, seconds == 1 ? "segundo" : "segundos"));
-        }
-
-        return String.join(", ", list);
+    public static String timeElapsedInWriting(Duration duration, WritingFormat writingFormat) {
+        return writingFormat.write(duration);
     }
 
     public Temporality plus(final long value, @NonNull final ChronoUnit unit) {
@@ -163,6 +183,10 @@ public class Temporality {
     public String fullDate(@NonNull final Object otherDate, final Chronos pattern) {
         return fullDate(otherDate, pattern.getPattern());
     }
+
+//    public String fullDate(@NonNull final Object otherDate, final String pattern) {
+//        return Temporality.timeElapsedInWriting(Duration.between(date, toLocalDateTime(otherDate, pattern)).abs());
+//    }
 
     public String fullDate(@NonNull final Object otherDate, final String pattern) {
         return Temporality.timeElapsedInWriting(Duration.between(date, toLocalDateTime(otherDate, pattern)).abs());
