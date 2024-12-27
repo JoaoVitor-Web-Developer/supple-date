@@ -29,5 +29,13 @@ public class GregorianCalendarConverterTest {
 			assertThrows(NullPointerException.class, () -> converter.toLocalDateTime(invalidDate, pattern, zoneId));
 		}
 
+		@Test
+		void givenNullableZoneId_whenToLocalDateTime_thenShouldThrowException() {
+			@NonNull GregorianCalendar invalidDate = new GregorianCalendar();
+			String pattern = "yyyyMMddHHmmss";
+			ZoneId zoneId = null;
+
+			assertThrows(NullPointerException.class, () -> converter.toLocalDateTime(invalidDate, pattern, zoneId));
+		}
 	}
 }
